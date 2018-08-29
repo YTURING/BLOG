@@ -80,7 +80,7 @@ tags:
 
      $ mkdir themes/next
 
-　　因为Powershell对某些linux命令不支持，比如grep，所以不能用github上作者提供的命令，我们可以下载下来，然后解压到next目录。然后在修改config.yml文件。
+　　因为Powershell对某些linux命令不支持，比如grep，所以不能用github上作者提供的命令，我们可以下载下来，然后解压到next目录。然后再修改config.yml文件。
 
 ![修改主题](/images/20180822200946.png)      
 
@@ -119,7 +119,7 @@ tags:
      $ hexo g
      $ hexo s  
 ![本地效果](/images/20180822211049.png)
-　　其他自己想要修改的可以参考[这里](https://theme-next.iissnan.com/getting-started.html "教程") 和[这里](https://github.com/iissnan/hexo-theme-next/wiki "wiki")。
+　　其他自己想要修改的可以参考[官方教程](https://theme-next.iissnan.com/getting-started.html "教程") 和[wiki](https://github.com/iissnan/hexo-theme-next/wiki "wiki")。
 
 4. 部署到github。登录到github，新建repository，   
 
