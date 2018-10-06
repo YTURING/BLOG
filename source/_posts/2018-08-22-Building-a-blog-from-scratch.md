@@ -196,7 +196,7 @@ Linux上和Windows上其实差不多，甚至更简单,我的环境是centos7,�
 　　但是终端还是不能代理，我们还需要一步，用`proxychain4`进行终端代理。输入如下命令：       
 
     [root@la ~]# git clone https://github.com/rofl0r/proxychains-ng
-    [root@la ~]# cd proxychain-ng
+    [root@la ~]# cd proxychains-ng
     [root@la ~]# ./configure --prefix=/usr --sysconfdir=/etc
     [root@la ~]# make && make install
     [root@la ~]# make install-config
