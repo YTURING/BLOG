@@ -8,7 +8,7 @@ subtitle:
 description: 原来让一个人变强大的最好方式，就是拥有一个想要保护的人。 
 keywords:
 author: 雅雅
-language: zh-Hans
+language: zh-CN
 timezone: Asia/Shanghai
 
 google_analytics: UA-102368455-3
@@ -78,7 +78,7 @@ pagination_dir: page
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: next
+theme: next-reloaded
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
