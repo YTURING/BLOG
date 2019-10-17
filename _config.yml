@@ -87,34 +87,3 @@ deploy:
   repo: git@github.com:YTURING/blog.git
   branch: master
 
-theme_config:
-  creative_commons:
-    license: by-nc-sa
-    sidebar: false
-    post: true
-    language:
-
-  menu:
-    home: / || home
-    categories: /categories/ || th
-    archives: /archives/ || archive
-    tags: /tags/ || tags
-    about: /about/ || user
-
-  social_icons:
-    enable: true
-    GitHub: github
-    icons_only: false
-    transition: false
-
-  busuanzi_count:
-    enable: true
-    total_visitors: true
-    total_visitors_icon: user
-    total_views: true
-    total_views_icon: eye
-    post_views: true
-    post_views_icon: eye
-
-
-  
