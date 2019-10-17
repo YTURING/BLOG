@@ -11,8 +11,8 @@ author: 雅雅
 language: zh-CN
 timezone: Asia/Shanghai
 
-google_analytics: UA-102368455-3
-google_site_verification: hJ2BR1LM9BXeerGbeA0ycR3om8heAa24PLcKExxewQc
+#google_analytics: UA-102368455-3
+#google_site_verification: hJ2BR1LM9BXeerGbeA0ycR3om8heAa24PLcKExxewQc
 # URL
 # Social links
 social:
@@ -46,7 +46,7 @@ future: true
 highlight:
   enable: true
   line_number: true
-  auto_detect: false
+  auto_detect: true
   tab_replace:
   
 # Home page setting
@@ -78,7 +78,7 @@ pagination_dir: page
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: next
+theme: next-reloaded
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
@@ -91,5 +91,5 @@ symbols_count_time:
   separated_meta: true
   item_text_post: true
   item_text_total: false
-  awl: 4
+  awl: 2
   wpm: 275
