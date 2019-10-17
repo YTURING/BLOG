@@ -380,7 +380,7 @@ safari_rainbow: false
 custom_scrollbar: false
 
 # Custom Logo (Do not support scheme Mist)
-custom_logo: /images/custom-logo.jpg
+#custom_logo: /images/custom-logo.jpg
 
 codeblock:
   # Code Highlight theme
@@ -389,7 +389,7 @@ codeblock:
   highlight_theme: night
   # Add copy button on codeblock
   copy_button:
-    enable: false
+    enable: true
     # Show text copy result.
     show_result: false
     # Available values: default | flat | mac
