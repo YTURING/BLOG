@@ -9,7 +9,7 @@ tags:
 这里使用第二种方法。			
 			
 
-    <pre><code>$ wget https://github.com/openssl/openssl/archive/OpenSSL_1_1_1d.tar.gz         
+        $ wget https://github.com/openssl/openssl/archive/OpenSSL_1_1_1d.tar.gz         
  	$ wget http://nginx.org/download/nginx-1.16.1.tar.gz          
  	$ tar zxvf OpenSSL_1_1_1d.tar.gz   
  	$ tar zxvf nginx-1.16.1.tar.gz        
@@ -22,7 +22,7 @@ tags:
  	这些模块自己自己选需要的     
  	$ sudo make && make install        //等待它编译完成就好了
  	$ nginx -V                         //可以看到把openssl编译进去了    
-</code></pre>
+
 ![openssl](/images/20191019210735.png)    
 
 2. 接下来我们修改一下nginx.conf配置文件。				
