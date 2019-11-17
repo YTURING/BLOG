@@ -1,7 +1,10 @@
 ---
 title: Learn-Docker
 date: 2019-07-25 18:41:17
+categories:
+- [Docker]
 tags:
+- [Docker]
 ---
 <p>最近在学Docker,用的是国内的《Docker 容器与容器云》，这里记录一下我遇到的问题。</p>
 <p>第一个Docker应用栈，HAProxy作为代理节点，Django 作两个web应用节点，redis作一个主数据库节点，另外两个数据库作从数>据库节点。</p>

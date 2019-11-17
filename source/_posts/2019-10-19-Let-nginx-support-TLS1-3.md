@@ -1,7 +1,10 @@
 ---
 title: nginx提供TLS1.3支持
 date: 2019-10-19 21:30:39
+categories:
+- [Nginx]
 tags:
+- [Nginx]
 ---
 作为更具安全性的TLS1.3，浏览器也都逐渐支持，是时候网站也升级为TLS1.3了（[ESNI](https://blog.hackerchai.com/encrypted-sni-anti-censorship/)也是个好东西，感兴趣可以了解下），接下来就说一下让Nginx支持TLS1.3的方法。    
         

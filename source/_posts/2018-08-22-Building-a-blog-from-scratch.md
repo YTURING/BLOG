@@ -1,7 +1,10 @@
 ---
 title: 搭建Hexo
 date: 2018-08-22 18:08:08
+categories:
+- [Linux]
 tags:
+- [Hexo]
 ---
 　　写一下hexo怎么搭建，以免自己以后忘记。
 　　首先得确定你是在windows平台上工作还是在linux平台上工作，这两种方式本地环境配置其实大同小异。

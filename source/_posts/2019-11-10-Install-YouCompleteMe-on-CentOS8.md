@@ -1,7 +1,10 @@
 ---
 title: Install YouCompleteMe on CentOS8
 date: 2019-11-10 19:48:42
+categories:
+- [Linux]
 tags:
+- [Vim]
 ---
 能用Vim搭建自己的IDE吗？当然可以。
 接下来记录一下自己是怎么在CentOS8上安装YouCompleteMe的以及遇到的问题，希望能帮到遇到相似问题的。
