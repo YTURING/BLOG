@@ -96,7 +96,7 @@ tags:
         let g:ycm_collect_identifiers_from_comments_and_strings = 0  
         hi MatchParen ctermbg=62  guibg=lightblue  
  
-4. 上面是一些自动补全及颜色的配置项，我个人的喜欢的配置，可以自行修改。然后在命令行输入 `vim` ，进入vim的命令行模式以后输入 `:PluginInstall` ,即可进入插件安装，有些插件可能对国内网络不是很友好，可开启命令行代理在进入安装。  
+4. 上面是一些自动补全及颜色的配置项，我个人的喜欢的配置，可以自行修改。然后在命令行输入 `vim` ，进入vim的命令行模式以后输入 `:PluginInstall` ,即可进入插件安装，有些插件可能对国内网络不是很友好，可开启命令行代理再进入安装。  
 5. 最后是 YouCompleteMe 的安装，  
   
         cd ~/.vim/bundle/YouCompleteMe  
