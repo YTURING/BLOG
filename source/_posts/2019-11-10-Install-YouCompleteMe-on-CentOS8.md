@@ -118,5 +118,5 @@ tags:
         export GOPATH=/root/.vim/bundle/YouCompleteMe/third_party/ycmd/third_party/go  
         python3 ./install.py --clang-completer --ts-completer --go-completer  
         cp ~/.vim/bundle/YouCompleteMe/third_party/ycmd/examples/.ycm_extra_conf.py   ~/.vim/bundle/YouCompleteMe/  
-结束啦，vim最棒！  
+结束啦，感谢那些为vim的使用体验提升不断努力的大佬们！
 
