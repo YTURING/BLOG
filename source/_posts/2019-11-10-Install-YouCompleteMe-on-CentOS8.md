@@ -13,7 +13,7 @@ tags:
         sudo dnf install cmake gcc-c++ make git python3-devel  //CentOS系
         sudo apt install build-essential cmake git python3-dev  //Debian系
 
-2. 然后安装[Vundle](http://),Vundle是Vim的插件管理器。  
+2. 然后安装[Vundle](https://github.com/VundleVim/Vundle.vim),Vundle是Vim的插件管理器。  
   
         git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim  
 
