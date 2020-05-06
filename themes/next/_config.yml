@@ -356,7 +356,7 @@ mobile_layout_economy: false
 android_chrome_color: "#222"
 
 # Custom Logo (Do not support scheme Mist)
-custom_logo: /images/avatar.png
+custom_logo:
 #/uploads/custom-logo.jpg
 
 codeblock:
