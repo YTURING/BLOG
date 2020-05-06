@@ -9,16 +9,16 @@ tags:
 能用Vim搭建自己的IDE吗？当然可以。
 接下来记录一下自己是怎么在CentOS8上安装YouCompleteMe的以及遇到的问题，希望能帮到遇到相似问题的。
 1. 首先安装预备环境  
-
+```Bash
         sudo dnf install cmake gcc-c++ make git python3-devel  //CentOS系
         sudo apt install build-essential cmake git python3-dev  //Debian系
-
+```
 2. 然后安装[Vundle](https://github.com/VundleVim/Vundle.vim),Vundle是Vim的插件管理器。  
-  
+```Bash  
         git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim  
-
+```
 3. 接下来  `vim ~/.vimrc` ,写入如下内容：  
-          
+```Bash          
         set backspace=2
         set nu
         set nocompatible              " be iMproved, required
@@ -95,10 +95,10 @@ tags:
         let g:ycm_complete_in_strings = 1
         let g:ycm_collect_identifiers_from_comments_and_strings = 0  
         hi MatchParen ctermbg=62  guibg=lightblue  
- 
+ ```
 4. 上面是一些自动补全及颜色的配置项，我个人的喜欢的配置，可以自行修改。然后在命令行输入 `vim` ，进入vim的命令行模式以后输入 `:PluginInstall` ,即可进入插件安装，有些插件可能对国内网络不是很友好，可开启命令行代理再进入安装。  
 5. 最后是 YouCompleteMe 的安装，  
-  
+```Bash
         cd ~/.vim/bundle/YouCompleteMe  
         python3 ./install.py --clang-completer --ts-completer --go-completer  
         cp ~/.vim/bundle/YouCompleteMe/third_party/ycmd/examples/.ycm_extra_conf.py   ~/.vim/bundle/YouCompleteMe/  
@@ -118,5 +118,6 @@ tags:
         export GOPATH=/root/.vim/bundle/YouCompleteMe/third_party/ycmd/third_party/go  
         python3 ./install.py --clang-completer --ts-completer --go-completer  
         cp ~/.vim/bundle/YouCompleteMe/third_party/ycmd/examples/.ycm_extra_conf.py   ~/.vim/bundle/YouCompleteMe/  
+```
 结束啦，感谢那些为vim的使用体验提升不断努力的大佬们！
 
