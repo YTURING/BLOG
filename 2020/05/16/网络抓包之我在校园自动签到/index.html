@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.yturing.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="自从疫情以来，我邮同学就多了一项任务“我在校园健康打卡”，个人觉得这是有些无聊的“形式主义“。秉持能不动手尽量不动手的原则，所以有了下文。开始是想着模拟登录来自动打卡，后来发现encryptData解密实在有些困难。偶然发现微信电脑版小程序的cookie有效期出乎意料的长，快两周了还没见它失效，那下面就简单了。   抓包 如果你是一名安全、运维人员，那直接用Fiddle、Charles抓包就行了，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络抓包之我在校园自动签到">
+<meta property="og:url" content="https://www.yturing.com/2020/05/16/%E7%BD%91%E7%BB%9C%E6%8A%93%E5%8C%85%E4%B9%8B%E6%88%91%E5%9C%A8%E6%A0%A1%E5%9B%AD%E8%87%AA%E5%8A%A8%E7%AD%BE%E5%88%B0/index.html">
+<meta property="og:site_name" content="YTURING">
+<meta property="og:description" content="自从疫情以来，我邮同学就多了一项任务“我在校园健康打卡”，个人觉得这是有些无聊的“形式主义“。秉持能不动手尽量不动手的原则，所以有了下文。开始是想着模拟登录来自动打卡，后来发现encryptData解密实在有些困难。偶然发现微信电脑版小程序的cookie有效期出乎意料的长，快两周了还没见它失效，那下面就简单了。   抓包 如果你是一名安全、运维人员，那直接用Fiddle、Charles抓包就行了，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.yturing.com/images/20200516154710.png">
+<meta property="og:image" content="https://www.yturing.com/images/20200516154849.png">
+<meta property="og:image" content="https://www.yturing.com/images/20200516143534.png">
+<meta property="og:image" content="https://www.yturing.com/images/20200516144437.png">
+<meta property="og:image" content="https://www.yturing.com/images/20200516144506.png">
+<meta property="og:image" content="https://www.yturing.com/images/20200516145057.png">
+<meta property="og:image" content="https://www.yturing.com/images/20200516152614.png">
+<meta property="og:image" content="https://www.yturing.com/images/20200516152759.png">
+<meta property="og:image" content="https://www.yturing.com/images/20200516152817.png">
+<meta property="og:image" content="https://www.yturing.com/images/20200516152840.png">
+<meta property="og:image" content="https://www.yturing.com/images/20200516152913.png">
+<meta property="og:image" content="https://www.yturing.com/images/20200516153012.png">
+<meta property="og:image" content="https://www.yturing.com/images/20200516153126.png">
+<meta property="og:image" content="https://www.yturing.com/images/20200516153303.png">
+<meta property="og:image" content="https://www.yturing.com/images/20200516153716.png">
+<meta property="og:image" content="https://www.yturing.com/images/20200516153744.png">
+<meta property="og:image" content="https://www.yturing.com/images/20200516154059.png">
+<meta property="og:image" content="https://www.yturing.com/images/20200516154359.png">
+<meta property="og:image" content="https://www.yturing.com/images/20200516155643.png">
+<meta property="article:published_time" content="2020-05-16T08:09:38.000Z">
+<meta property="article:modified_time" content="2020-07-10T09:35:45.971Z">
+<meta property="article:author" content="雅雅">
+<meta property="article:tag" content="我在校园">
+<meta property="article:tag" content="抓包">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.yturing.com/images/20200516154710.png">
+
+<link rel="canonical" href="https://www.yturing.com/2020/05/16/%E7%BD%91%E7%BB%9C%E6%8A%93%E5%8C%85%E4%B9%8B%E6%88%91%E5%9C%A8%E6%A0%A1%E5%9B%AD%E8%87%AA%E5%8A%A8%E7%AD%BE%E5%88%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>网络抓包之我在校园自动签到 | YTURING</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="YTURING" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">YTURING</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+  <span class="exturl github-corner" data-url="aHR0cHM6Ly9naXRodWIuY29tL1lUVVJJTkc=" title="Follow me on GitHub" aria-label="Follow me on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></span>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.yturing.com/2020/05/16/%E7%BD%91%E7%BB%9C%E6%8A%93%E5%8C%85%E4%B9%8B%E6%88%91%E5%9C%A8%E6%A0%A1%E5%9B%AD%E8%87%AA%E5%8A%A8%E7%AD%BE%E5%88%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="雅雅">
+      <meta itemprop="description" content="原来让一个人变强大的最好方式，就是拥有一个想要保护的人。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YTURING">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          网络抓包之我在校园自动签到
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-16 16:09:38" itemprop="dateCreated datePublished" datetime="2020-05-16T16:09:38+08:00">2020-05-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-07-10 17:35:45" itemprop="dateModified" datetime="2020-07-10T17:35:45+08:00">2020-07-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">网络</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2020/05/16/%E7%BD%91%E7%BB%9C%E6%8A%93%E5%8C%85%E4%B9%8B%E6%88%91%E5%9C%A8%E6%A0%A1%E5%9B%AD%E8%87%AA%E5%8A%A8%E7%AD%BE%E5%88%B0/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/05/16/网络抓包之我在校园自动签到/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>自从疫情以来，我邮同学就多了一项任务“我在校园健康打卡”，个人觉得这是有些无聊的“形式主义“。秉持能不动手尽量不动手的原则，所以有了下文。开始是想着模拟登录来自动打卡，后来发现encryptData解密实在有些困难。偶然发现微信电脑版小程序的cookie有效期出乎意料的长，快两周了还没见它失效，那下面就简单了。  </p>
+<h3 id="抓包"><a href="#抓包" class="headerlink" title="抓包"></a>抓包</h3><ol>
+<li>如果你是一名安全、运维人员，那直接用Fiddle、Charles抓包就行了，一切是那么自然。打开Charles,打开电脑版微信，点击我在校园公众号左下角菜单栏，进入小程序，如果提示登录，登录就行。然后在Charles就可看到小程序抓到的包。复制Cookie字段，”SESSION=“ 后面的字符串备用。<br><img src="/images/20200516154710.png" alt="Charles抓包"><br>如果你只是临时修改一次打卡位置，可以在提交之前，右击student.wozaixiaoyuan.com,设置断点(Breakpoints)，然后点击提交，这时post的数据就被拦截了，找到health/save.json，把里面的键值修改为自己想设置的值即可，默认它还会把经纬度，精确到乡镇发送到服务器，你可以将这些字段删除。如果你想玩，还可以修改为火星，或者完全不存在的地名（希望导员不会找你谈话）。<br><img src="/images/20200516154849.png" alt="断点"></li>
+<li>如果你是一名前端开发人员，可能nodejs用的多。你可以用<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2F2d28vd2hpc3RsZS9ibG9iL21hc3Rlci9SRUFETUUtemhfQ04ubWQ=">whistle<i class="fa fa-external-link-alt"></i></span>来抓包，  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g whistle</span><br></pre></td></tr></table></figure>
+<img src="/images/20200516143534.png" alt="安装whistle"><br>如果安装地慢请自行使用代理或换国内源。然后启动whistle  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">w2 start -p 8080 -n <span class="built_in">test</span> -w proxyadmin  </span><br><span class="line">参数说明：</span><br><span class="line">-p 指定抓包的代理端口和网络访问端口  </span><br><span class="line">-n 设置用户名  </span><br><span class="line">-w 设置登录密码 如果你嫌麻烦不想设置用户名和密码，本地到是无所谓，如果是服务器最好设置。</span><br></pre></td></tr></table></figure>
+<img src="/images/20200516144437.png" alt="启动whistle"><br>浏览器打开对应端口即可看到<br><img src="/images/20200516144506.png" alt="网页"><br>登录后看到页面<br><img src="/images/20200516145057.png" alt="首页"><br>点击菜单HTTPS，勾选两个复选框，然后下载根证书(Download RootCA)，双击下载好的rootCA.crt,安装证书到”受信任的根证书颁发机构“。<br><img src="/images/20200516152614.png" alt="下载证书"><br><img src="/images/20200516152759.png" alt="安装证书"><br><img src="/images/20200516152817.png" alt="安装证书"><br><img src="/images/20200516152840.png" alt="安装证书"><br><img src="/images/20200516152913.png" alt="安装证书"><br>设置代理，注意要点击保存。<br><img src="/images/20200516153012.png" alt="设置代理"><br><img src="/images/20200516153126.png" alt="设置代理"><br>这种代理的好处是你可以部署到服务器，然后通过web访问。<br>打开小程序抓包<br>打开电脑版微信，打开小程序。<br><img src="/images/20200516153303.png" alt="打开小程序"><br><img src="/images/20200516153716.png" alt="打开小程序"><br>你可以点击上面菜单栏[Filter]过滤student.wozaixiaoyuan.com,只抓我在校园的包，然后点击任意一个包<br><img src="/images/20200516153744.png" alt="抓包"><br><img src="/images/20200516154059.png" alt="抓包"><br>点击包之后点击菜单栏Compose,右边就会出现包的详细内容，复制”SESSION=”后面的字符串备用。如果你只是临时修改，那就把POST后面URL中的home.json换为health/save.json ,在下面body里面填上<code>answers=%5B%220%22%5D&amp;country=%E4%B8%AD%E5%9B%BD&amp;city=&amp;district=&amp;province=</code>，city等号后面写上城市名，district等号后面写上区名，province后面写上省份名，如果你真的有症状，可以把answers等号后面的0改为你症状的数字减一，具体看小程序。国家就把country等号后面&amp;前面的字符串改为对应国家。修改完成后点击Go。<br>抓完了停止whistle即可,然后在Windows系统设置里把代理关掉。<br><img src="/images/20200516154359.png" alt="停止w2">  </li>
+</ol>
+<h3 id="自动打卡"><a href="#自动打卡" class="headerlink" title="自动打卡"></a>自动打卡</h3><p>如果你有一台Linux服务器，自动打卡就很方便了，定时执行cURL或写个Python脚本，定时执行，Windows上面你可以用计划程序，理论上也可以自动打卡，但它的执行成功率我没测试过，感兴趣的可以用windows试试。下面以Linux为例：<br>wzxy.py  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">import requests,random</span><br><span class="line"></span><br><span class="line">headers &#x3D; &#123;</span><br><span class="line">        &#39;Host&#39;: &#39;student.wozaixiaoyuan.com&#39;,</span><br><span class="line">        &#39;User-Agent&#39;: &#39;Mozilla&#x2F;5.0 (Linux; Android 10; Build&#x2F;QQ2A.200405.005; wv) AppleWebKit&#x2F;537.36 (KHTML, like Gecko) Version&#x2F;4.0 Chrome&#x2F;80.0.3987.132 Mobile Safari&#x2F;537.36 MicroMessenger&#x2F;6.7.3.1341(0x26070340) NetType&#x2F;WIFI Language&#x2F;en Process&#x2F;appbrand0&#39;,</span><br><span class="line">        &#39;Cookie&#39;: &#39;SESSION&#x3D;; Path&#x3D;&#x2F;; HttpOnly&#39;,</span><br><span class="line">        &#39;token&#39;: &#39;&#39;,</span><br><span class="line">        &#39;Referer&#39;: &#39;https:&#x2F;&#x2F;servicewechat.com&#x2F;wxce6d08f781975d91&#x2F;114&#x2F;page-frame.html&#39;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">te &#x3D; &quot;0 1 &quot;  + &quot;目前体温&quot; + str(random.randint(365,370)&#x2F;10) + &quot;℃&quot;  # 随机生成一定范围的温度（36.5-37.0），可修改</span><br><span class="line">postdata &#x3D; &#123;</span><br><span class="line">        &#39;answers&#39;: str(te.split()),</span><br><span class="line">        &#39;country&#39;: &#39;中国&#39;,</span><br><span class="line">        &#39;city&#39;: &#39;西安市&#39;,</span><br><span class="line">        &#39;district&#39;: &#39;&#39;,</span><br><span class="line">        &#39;province&#39;: &#39;陕西省&#39;</span><br><span class="line">        &#125;</span><br><span class="line">url &#x3D; &#39;https:&#x2F;&#x2F;student.wozaixiaoyuan.com&#x2F;health&#x2F;save.json&#39;</span><br><span class="line">session &#x3D; requests.Session()</span><br><span class="line">response &#x3D; session.post(url, data&#x3D;postdata, headers&#x3D;headers)</span><br></pre></td></tr></table></figure>
+
+<p>这是python3脚本，在SESSION=后面填上刚才让保存的字符串。然后city、district、province填自己的即可。如果想修改自己的机型和系统版本，在User-Agent里修改就行。<br>然后设置定时执行  </p>
+<hr>
+<p><strong>2020.7.10 更新</strong><br>本不打算更新的，反正没人看，昨天看到黎同学的回复，所以才有了今天的故事。<br>自cookie不失效在公众号发布以后，我在校园就在小程序的登录返回了一个token字段，后面打卡需要用到。目前还没找到方法破解，经过一个多月的时间，token很稳定地4天失效一次，所以需要每4天抓一次token换到脚本里，剩下的剩下的就交给脚本自动打卡就行了。<br>还有黎同学提到了检测设备，我虽没明说，上面也有提到。黎同学给出了UA列表（<span class="exturl" data-url="aHR0cDovL3d3dy5meW5hcy5jb20vdWHvvInvvIzlr7nkuo7kuI3kvJrmipPmiYvmnLrljIXnmoTlkIzlrabov5jmmK/lvojmnInnlKjnmoTvvIzlpoLmnpzkvJrmipPljIXvvIzmipPkuIDkuIvoh6rlt7HmiYvmnLrnmoTvvIznhLblkI7loavkuIrlsLHooYzjgII=">http://www.fynas.com/ua），对于不会抓手机包的同学还是很有用的，如果会抓包，抓一下自己手机的，然后填上就行。<i class="fa fa-external-link-alt"></i></span><br>在此感谢黎同学的付出和给我更新的动力！</p>
+<hr>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root<span class="comment"># crontab -e    //命令行输入crontab -e就会进入到一个界面，具体进入哪个界面和你设置有关，你设置的vim编辑器进入的就是vim，设置的nano就是nano。  </span></span><br><span class="line">写上：</span><br><span class="line">0 7 * * * /usr/bin/python3 /home/wzxy.py  </span><br><span class="line">保存退出即可。上面这行表示每天早上7点定时执行，前面5个字段分别代表分钟、小时、日、月、周。</span><br><span class="line">后面/home/wzxy.py是你保存的python脚本的位置。</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/20200516155643.png" alt="记录"><br>这是执行记录，已经稳定自动打卡13天，cookie还未失效。<br>不建议使用手机端cookie，失效过快。如果想临时修改位置，除了使用修改定位软件，也可以在在手机上上抓包修改，比如安卓有httpcanary，无需root但要抓小程序的包得微信7.0.0以下版本或者Android 7.0以下版本，如果已经root，就无所谓版本了，把根证书安装到/system/etc/security/cacerts目录下用证书哈希.0命名，可能会遇到挂载问题，<code>mount -o rw,remount /</code>。ios也有对应的抓包软件，比如stream，抓到修改post参数即可。</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>雅雅
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.yturing.com/2020/05/16/%E7%BD%91%E7%BB%9C%E6%8A%93%E5%8C%85%E4%B9%8B%E6%88%91%E5%9C%A8%E6%A0%A1%E5%9B%AD%E8%87%AA%E5%8A%A8%E7%AD%BE%E5%88%B0/" title="网络抓包之我在校园自动签到">https://www.yturing.com/2020/05/16/网络抓包之我在校园自动签到/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC8="><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%88%91%E5%9C%A8%E6%A0%A1%E5%9B%AD/" rel="tag"># 我在校园</a>
+              <a href="/tags/%E6%8A%93%E5%8C%85/" rel="tag"># 抓包</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/05/08/Lenovo-%E5%B0%8F%E6%96%B0Pro13-VMware-workstation%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AE%89%E8%A3%85%E9%BB%91%E8%8B%B9%E6%9E%9C/" rel="prev" title="Lenovo 小新Pro13 VMware workstation虚拟机安装黑苹果">
+      <i class="fa fa-chevron-left"></i> Lenovo 小新Pro13 VMware workstation虚拟机安装黑苹果
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#抓包"><span class="nav-number">1.</span> <span class="nav-text">抓包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自动打卡"><span class="nav-number">2.</span> <span class="nav-text">自动打卡</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="雅雅"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">雅雅</p>
+  <div class="site-description" itemprop="description">原来让一个人变强大的最好方式，就是拥有一个想要保护的人。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">雅雅</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">19k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">35 分钟</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme    : 'dark',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://yturing.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://www.yturing.com/2020/05/16/%E7%BD%91%E7%BB%9C%E6%8A%93%E5%8C%85%E4%B9%8B%E6%88%91%E5%9C%A8%E6%A0%A1%E5%9B%AD%E8%87%AA%E5%8A%A8%E7%AD%BE%E5%88%B0/";
+    this.page.identifier = "2020/05/16/网络抓包之我在校园自动签到/";
+    this.page.title = "网络抓包之我在校园自动签到";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://yturing.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>
