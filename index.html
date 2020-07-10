@@ -193,7 +193,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-07-10 17:35:45" itemprop="dateModified" datetime="2020-07-10T17:35:45+08:00">2020-07-10</time>
+                <time title="修改时间：2020-07-10 17:46:47" itemprop="dateModified" datetime="2020-07-10T17:46:47+08:00">2020-07-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -256,7 +256,7 @@
 
 <p>这是python3脚本，在SESSION=后面填上刚才让保存的字符串。然后city、district、province填自己的即可。如果想修改自己的机型和系统版本，在User-Agent里修改就行。<br>然后设置定时执行  </p>
 <hr>
-<p><strong>2020.7.10 更新</strong><br>本不打算更新的，反正没人看，昨天看到黎同学的回复，所以才有了今天的故事。<br>自cookie不失效在公众号发布以后，我在校园就在小程序的登录返回了一个token字段，后面打卡需要用到。目前还没找到方法破解，经过一个多月的时间，token很稳定地4天失效一次，所以需要每4天抓一次token换到脚本里，剩下的剩下的就交给脚本自动打卡就行了。<br>还有黎同学提到了检测设备，我虽没明说，上面也有提到。黎同学给出了UA列表（<span class="exturl" data-url="aHR0cDovL3d3dy5meW5hcy5jb20vdWHvvInvvIzlr7nkuo7kuI3kvJrmipPmiYvmnLrljIXnmoTlkIzlrabov5jmmK/lvojmnInnlKjnmoTvvIzlpoLmnpzkvJrmipPljIXvvIzmipPkuIDkuIvoh6rlt7HmiYvmnLrnmoTvvIznhLblkI7loavkuIrlsLHooYzjgII=">http://www.fynas.com/ua），对于不会抓手机包的同学还是很有用的，如果会抓包，抓一下自己手机的，然后填上就行。<i class="fa fa-external-link-alt"></i></span><br>在此感谢黎同学的付出和给我更新的动力！</p>
+<p><strong>2020.7.10 更新</strong><br>本不打算更新的，反正没人看，昨天看到黎同学的回复，所以才有了今天的故事。<br>自cookie不失效在公众号发布以后，我在校园就在小程序的登录返回了一个token字段，后面打卡需要用到。目前还没找到方法破解，经过一个多月观察与实践，token很稳定地4天失效一次，所以需要每4天抓一次token换到脚本里，剩下的就交给脚本自动打卡就行了。<br>还有黎同学提到了检测设备，我虽没明说，上面也有提到。黎同学给出了UA列表（<span class="exturl" data-url="aHR0cDovL3d3dy5meW5hcy5jb20vdWHvvInvvIzlr7nkuo7kuI3kvJrmipPmiYvmnLrljIXnmoTlkIzlrabov5jmmK/lvojmnInnlKjnmoTvvIzlpoLmnpzkvJrmipPljIXvvIzmipPkuIDkuIvoh6rlt7HmiYvmnLrnmoTvvIznhLblkI7loavkuIrlsLHooYzjgII=">http://www.fynas.com/ua），对于不会抓手机包的同学还是很有用的，如果会抓包，抓一下自己手机的，然后填上就行。<i class="fa fa-external-link-alt"></i></span><br>在此感谢黎同学的付出和给我更新的动力！</p>
 <hr>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root<span class="comment"># crontab -e    //命令行输入crontab -e就会进入到一个界面，具体进入哪个界面和你设置有关，你设置的vim编辑器进入的就是vim，设置的nano就是nano。  </span></span><br><span class="line">写上：</span><br><span class="line">0 7 * * * /usr/bin/python3 /home/wzxy.py  </span><br><span class="line">保存退出即可。上面这行表示每天早上7点定时执行，前面5个字段分别代表分钟、小时、日、月、周。</span><br><span class="line">后面/home/wzxy.py是你保存的python脚本的位置。</span><br></pre></td></tr></table></figure>
 
